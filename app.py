@@ -35,6 +35,7 @@ class Winner(db.Model):
     game_id = db.Column(db.String(36), db.ForeignKey('game.id'), nullable=False)
     player_id = db.Column(db.Integer, db.ForeignKey('player.id'), nullable=False)
     percentage = db.Column(db.Float, default=100.0)
+    name = db.Column(db.String(100), nullable=False)
 
 
 # Routes
@@ -76,7 +77,7 @@ def game_detail(game_id):
     for w in winners:
         winnings[w.player.name] = w.percentage
 
-    return render_template("game_detail.html", game=game, players=players, buyins=buyins, winnings=winnings)
+    return render_template("game_detail.html", game=game, players=players, buyins=buyins, winnings=winnings, game_id=game_id)
 
 
 @app.route("/game/<game_id>/add_player", methods=["POST"])
@@ -132,6 +133,11 @@ def assign_winner(game_id):
 
     players = Player.query.filter_by(game_id=game_id).all()
 
+    winner_lookup = {
+    winner.player_id: winner.percentage
+    for winner in game.winners
+    }
+
     if request.method == "POST":
         # Clear existing winnings
         Winner.query.filter_by(game_id=game_id).delete()
@@ -143,7 +149,7 @@ def assign_winner(game_id):
                 try:
                     percent = float(percent_str)
                     if percent > 0:
-                        winner = Winner(game_id=game_id, player_id=player.id, percentage=percent)
+                        winner = Winner(game_id=game_id, player_id=player.id, percentage=percent, name=player.name)
                         db.session.add(winner)
                 except ValueError:
                     pass  # Ignore invalid numbers
@@ -151,7 +157,7 @@ def assign_winner(game_id):
         db.session.commit()
         return redirect(url_for("game_detail", game_id=game_id))
 
-    return render_template("assign_winner.html", game=game, players=players)
+    return render_template("assign_winner.html", game=game, players=players, winner_lookup=winner_lookup)
 
 
 @app.route("/delete_player/<game_id>/<int:player_id>", methods=["POST"])
@@ -248,6 +254,36 @@ def summary():
     debts = simplify_debts(net_balances)
 
     return render_template("summary.html", games=games, debts=debts, net_balances=net_balances)
+
+
+@app.route("/debts")
+def debts_summary():
+    net_balances = {}
+
+    games = Game.query.all()
+
+    for game in games:
+        if game.settled:
+            # skip settled games
+            continue
+
+        buyin_totals = {}
+        for b in game.buyins:
+            buyin_totals[b.player.name] = buyin_totals.get(b.player.name, 0) + b.amount
+
+        winnings = {w.player.name: w.percentage for w in game.winners}
+        total_pot = sum(buyin_totals.values())
+
+        players = [p.name for p in game.players]
+
+        for player in players:
+            won_amount = (winnings.get(player, 0) / 100) * total_pot if winnings else 0
+            net = won_amount - buyin_totals.get(player, 0)
+            net_balances[player] = net_balances.get(player, 0) + net
+
+    debts = simplify_debts(net_balances)
+
+    return render_template("debts_summary.html", games=games, debts=debts, net_balances=net_balances)
 
 
 @app.route("/games")

@@ -3,9 +3,10 @@
 <h2>Assign Winnings for {{ game.name }}</h2>
 
 <form method="post">
-  {% for player in game.players %}
-    <label>{{ player }}'s share (%):</label>
-    <input type="number" name="{{ player }}" step="0.01" min="0" max="100" value="{{ game.winnings.get(player, '') }}"><br>
+  {% for player in players %}
+    <label>{{ player.name }}'s share (%):</label>
+    <input type="number" name="{{ player.name }}" step="0.01" min="0" max="100"
+       value="{{ winner_lookup.get(player.id, '') }}"><br>
   {% endfor %}
   <br>
   <button type="submit">Save Winnings</button>

@@ -3,9 +3,9 @@
 <h1>Poker Games</h1>
 
 <ul>
-  {% for game_id, game in games.items() %}
+  {% for game in games %}
     <li>
-      <a href="{{ url_for('game_detail', game_id=game_id) }}">{{ game.name }}</a>
+      <a href="{{ url_for('game_detail', game_id=game.id) }}">{{ game.name }}</a>
     </li>
   {% endfor %}
 </ul>

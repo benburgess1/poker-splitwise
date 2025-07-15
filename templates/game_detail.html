@@ -6,15 +6,15 @@
 <ul>
   {% for player in game.players %}
     <li>
-      {{ player }}
-      <form action="{{ url_for('delete_player', game_id=game_id, player_name=player) }}" method="post" style="display:inline;">
-        <button type="submit" onclick="return confirm('Delete player {{ player }}?')">Delete</button>
+      {{ player.name }}
+      <form action="{{ url_for('delete_player', game_id=game_id, player_id=player.id) }}" method="post" style="display:inline;">
+        <button type="submit" onclick="return confirm('Delete player {{ player.name }}?')">Delete</button>
       </form>
     </li>
   {% endfor %}
 </ul>
 
-<form action="{{ url_for('add_player', game_id=game_id) }}" method="post">
+<form action="{{ url_for('add_player', game_id=game_id) }}" method="POST">
   <input type="text" name="player_name" placeholder="Add player name" required>
   <button type="submit">Add Player</button>
 </form>
@@ -25,8 +25,8 @@
 <ul>
   {% for buyin in game.buyins %}
     <li>
-      {{ buyin.player }}: £{{ "%.2f"|format(buyin.amount) }}
-      <form action="{{ url_for('delete_buyin', game_id=game_id, buyin_index=loop.index0) }}" method="post" style="display:inline;">
+      {{ buyin.player.name }}: £{{ "%.2f"|format(buyin.amount) }}
+      <form action="{{ url_for('delete_buyin', game_id=game_id, buyin_id=buyin.id) }}" method="post" style="display:inline;">
         <button type="submit" onclick="return confirm('Delete this buy-in?')">Delete</button>
       </form>
     </li>
@@ -37,7 +37,7 @@
   <select name="player" required>
     <option value="" disabled selected>Select player</option>
     {% for player in game.players %}
-      <option value="{{ player }}">{{ player }}</option>
+      <option value="{{ player.name }}">{{ player.name }}</option>
     {% endfor %}
   </select>
   <input type="number" name="amount" step="0.01" min="0" placeholder="Amount" required>
@@ -47,10 +47,10 @@
 <hr>
 
 <h2>Winnings</h2>
-{% if game.winnings %}
+{% if winnings %}
   <ul>
-    {% for player, percent in game.winnings.items() %}
-      <li>{{ player }}: {{ percent }}%</li>
+    {% for name, percent in winnings.items() %}
+      <li>{{ name }}: {{ percent }}%</li>
     {% endfor %}
   </ul>
 {% else %}
