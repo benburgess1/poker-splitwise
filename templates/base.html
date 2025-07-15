@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+    <title>Poker Settlement</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2em;
+        }
+        nav {
+            margin-bottom: 1em;
+        }
+        nav a {
+            margin-right: 1em;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('home') }}">Home</a> |
+        <a href="{{ url_for('games_summary') }}">Games</a> |
+        <a href="{{ url_for('debts_summary') }}">Debts</a>
+    </nav>
+    {% block content %}{% endblock %}
+</body>
+</html>

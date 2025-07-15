@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Game: {{ game.name }}</h1>
+
+<h2>Players</h2>
+<ul>
+  {% for player in game.players %}
+    <li>
+      {{ player }}
+      <form action="{{ url_for('delete_player', game_id=game_id, player_name=player) }}" method="post" style="display:inline;">
+        <button type="submit" onclick="return confirm('Delete player {{ player }}?')">Delete</button>
+      </form>
+    </li>
+  {% endfor %}
+</ul>
+
+<form action="{{ url_for('add_player', game_id=game_id) }}" method="post">
+  <input type="text" name="player_name" placeholder="Add player name" required>
+  <button type="submit">Add Player</button>
+</form>
+
+<hr>
+
+<h2>Buy-ins</h2>
+<ul>
+  {% for buyin in game.buyins %}
+    <li>
+      {{ buyin.player }}: £{{ "%.2f"|format(buyin.amount) }}
+      <form action="{{ url_for('delete_buyin', game_id=game_id, buyin_index=loop.index0) }}" method="post" style="display:inline;">
+        <button type="submit" onclick="return confirm('Delete this buy-in?')">Delete</button>
+      </form>
+    </li>
+  {% endfor %}
+</ul>
+
+<form action="{{ url_for('add_buyin', game_id=game_id) }}" method="post">
+  <select name="player" required>
+    <option value="" disabled selected>Select player</option>
+    {% for player in game.players %}
+      <option value="{{ player }}">{{ player }}</option>
+    {% endfor %}
+  </select>
+  <input type="number" name="amount" step="0.01" min="0" placeholder="Amount" required>
+  <button type="submit">Add Buy-in</button>
+</form>
+
+<hr>
+
+<h2>Winnings</h2>
+{% if game.winnings %}
+  <ul>
+    {% for player, percent in game.winnings.items() %}
+      <li>{{ player }}: {{ percent }}%</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No winners assigned yet.</p>
+{% endif %}
+<a href="{{ url_for('assign_winner', game_id=game_id) }}">Assign/Change Winners</a>
+
+<hr>
+<p><a href="{{ url_for('games_summary') }}">Back to Games Summary</a></p>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Summary of All Games</h1>
+
+<h2>Games and Outcomes</h2>
+<ul>
+  {% for game_id, game in games.items() %}
+    <li>
+      <strong>{{ game.name }}</strong>
+      <ul>
+        <li>Players: {{ game.players | join(', ') }}</li>
+        <li>Buy-ins:
+          <ul>
+            {% for b in game.buyins %}
+              <li>{{ b.player }}: £{{ "%.2f"|format(b.amount) }}</li>
+            {% endfor %}
+          </ul>
+        </li>
+        <li>Winnings:
+          <ul>
+            {% if game.winnings %}
+              {% for player, percent in game.winnings.items() %}
+                <li>{{ player }}: {{ percent }}%</li>
+              {% endfor %}
+            {% else %}
+              <li>No winnings assigned yet</li>
+            {% endif %}
+          </ul>
+        </li>
+      </ul>
+    </li>
+  {% endfor %}
+</ul>
+
+<hr>
+
+<h2>Simplified Debts</h2>
+{% if debts %}
+  <ul>
+    {% for payer, receiver, amount in debts %}
+      <li>{{ payer }} owes {{ receiver }} £{{ "%.2f"|format(amount) }}</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No debts to settle. Everyone is even!</p>
+{% endif %}
+
+<p><a href="{{ url_for('home') }}">Back to Home</a></p>
+{% endblock %}

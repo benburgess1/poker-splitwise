@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>All Games</h1>
+
+<h2>Active Games</h2>
+{% if active_games %}
+<ul>
+  {% for game_id, game in active_games.items() %}
+    <li>
+      <a href="{{ url_for('game_detail', game_id=game_id) }}">{{ game.name }}</a>
+      <form action="{{ url_for('settle_game', game_id=game_id) }}" method="post" style="display:inline;">
+        <button type="submit">Mark as Settled</button>
+      </form>
+      <ul>
+        <li><strong>Players:</strong>
+          <ul>
+            {% for player in game.players %}
+              <li>
+                {{ player }}
+                <!-- <form action="{{ url_for('delete_player', game_id=game_id, player_name=player) }}" method="post" style="display:inline;">
+                  <button type="submit" onclick="return confirm('Delete player {{ player }}?')">Delete</button> -->
+                </form>
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
+
+        <li><strong>Buy-ins:</strong>
+          <ul>
+            {% for buyin in game.buyins %}
+              <li>
+                {{ buyin.player }}: £{{ "%.2f"|format(buyin.amount) }}
+                <!-- <form action="{{ url_for('delete_buyin', game_id=game_id, buyin_index=loop.index0) }}" method="post" style="display:inline;">
+                  <button type="submit" onclick="return confirm('Delete this buy-in?')">Delete</button> -->
+                </form>
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
+
+        <li><strong>Winners:</strong>
+          <ul>
+            {% if game.winnings %}
+              {% for player, percent in game.winnings.items() %}
+                <li>{{ player }}: {{ percent }}%</li>
+              {% endfor %}
+            {% else %}
+              <li>No winners assigned yet</li>
+            {% endif %}
+          </ul>
+        </li>
+      </ul>
+    </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No active games</p>
+{% endif %}
+
+<hr>
+
+<h2>Settled Games</h2>
+{% if settled_games %}
+<ul>
+  {% for game_id, game in settled_games.items() %}
+    <li>
+      <a href="{{ url_for('game_detail', game_id=game_id) }}">{{ game.name }}</a>
+      <form action="{{ url_for('reactivate_game', game_id=game_id) }}" method="post" style="display:inline;">
+        <button type="submit">Reactivate Game</button>
+      </form>
+      <ul>
+        <li><strong>Players:</strong> {{ game.players | join(', ') }}</li>
+        <li><strong>Buy-ins:</strong>
+          <ul>
+            {% for b in game.buyins %}
+              <li>{{ b.player }}: £{{ "%.2f"|format(b.amount) }}</li>
+            {% endfor %}
+          </ul>
+        </li>
+        <li><strong>Winners:</strong>
+          <ul>
+            {% if game.winnings %}
+              {% for player, percent in game.winnings.items() %}
+                <li>{{ player }}: {{ percent }}%</li>
+              {% endfor %}
+            {% else %}
+              <li>No winners assigned yet</li>
+            {% endif %}
+          </ul>
+        </li>
+      </ul>
+    </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No settled games</p>
+{% endif %}
+
+<p><a href="{{ url_for('home') }}">Back to Home</a></p>
+<p><a href="{{ url_for('debts_summary') }}">View Simplified Debts</a></p>
+{% endblock %}

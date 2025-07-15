@@ -1,0 +1,45 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environment
+venv/
+env/
+cleanenv/
+
+# VSCode settings
+.vscode/
+
+# Mac system files
+.DS_Store
+
+# Python packaging
+*.egg-info/
+dist/
+build/
+
+# Flask stuff
+instance/
+*.sqlite3
+
+# Logs
+*.log
+
+# Pytest cache
+.pytest_cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+
+# Ignore SQLite database (if you want it local only)
+*.db
+*.sqlite
+
+# IDE/project files
+.idea/
+*.iml
