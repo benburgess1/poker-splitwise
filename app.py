@@ -2,10 +2,23 @@ from flask import Flask, render_template, request, redirect, url_for, abort
 from flask_sqlalchemy import SQLAlchemy
 import uuid
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+use_local = os.getenv("USE_LOCAL_DB", "False") == "True"
 
 app = Flask(__name__)
-# DATABASE_URL = 'postgresql://poker_log_user:jGPOzK1vd9zxrmkO0MRErBixhrRyGhrt@dpg-d1r5trur433s739tbtng-a.oregon-postgres.render.com/poker_log'
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+if use_local:
+    database_url = os.getenv("LOCAL_DATABASE_URL")
+else:
+    # On Render, DATABASE_URL is set automatically in the environment
+    database_url = os.getenv("DATABASE_URL")
+
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+# app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///poker.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)

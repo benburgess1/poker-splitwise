@@ -43,3 +43,6 @@ htmlcov/
 # IDE/project files
 .idea/
 *.iml
+
+# Environment
+.env
