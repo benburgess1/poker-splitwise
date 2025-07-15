@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, abort
 from flask_sqlalchemy import SQLAlchemy
 import uuid
+import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///poker.db'
+# DATABASE_URL = 'postgresql://poker_log_user:jGPOzK1vd9zxrmkO0MRErBixhrRyGhrt@dpg-d1r5trur433s739tbtng-a.oregon-postgres.render.com/poker_log'
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///poker.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
