@@ -37,8 +37,8 @@ htmlcov/
 .coverage
 
 # Ignore SQLite database (if you want it local only)
-*.db
-*.sqlite
+# *.db
+# *.sqlite
 
 # IDE/project files
 .idea/
