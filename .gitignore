@@ -23,7 +23,7 @@ dist/
 build/
 
 # Flask stuff
-instance/
+# instance/
 *.sqlite3
 
 # Logs
