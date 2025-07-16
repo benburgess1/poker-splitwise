@@ -47,5 +47,6 @@ htmlcov/
 # Environment
 .env
 
-# Database Creation
+# Excluded Files
 init_db.py
+test.py
