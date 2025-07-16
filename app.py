@@ -15,8 +15,6 @@ else:
     database_url = os.getenv("DATABASE_URL")
 
 app.config["SQLALCHEMY_DATABASE_URI"] = database_url
-
-
 # app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 # app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///poker.db'

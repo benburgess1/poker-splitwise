@@ -46,3 +46,6 @@ htmlcov/
 
 # Environment
 .env
+
+# Database Creation
+init_db.py
